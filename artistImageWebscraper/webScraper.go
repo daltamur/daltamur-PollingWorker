@@ -16,6 +16,7 @@ func GetArtistImage(artistUrl *string) *[]string {
 
 	//instantiate the web scraper
 	c := colly.NewCollector()
+	c.CheckHead = true
 
 	//timeout after 120 seconds if nothing comes back
 	c.SetRequestTimeout(120 * time.Second)
@@ -46,11 +47,13 @@ func GetArtistImage(artistUrl *string) *[]string {
 	//Our image URL comes in like last.fm/<Some Artist>/_/<Some Song>
 	//We only need last.fm/<some_artist> to get our address we will webscrape.
 	err := c.Visit(strings.Split(*artistUrl, "/_")[0])
-	if err != nil {
-		panic(err)
+	for err != nil {
+		//for some reason in docker it will fail sometimes (this never happens when I run just the compiled binaries like normal).
+		//just keep trying until we don't fail anymore
+		err = c.Visit(strings.Split(*artistUrl, "/_")[0])
 	}
 
-	//return the address of the imageAddresses slice that holde all the artist's images in various sizes
+	//return the address of the imageAddresses slice that hold all the artist's images in various sizes
 	return &imageAddresses
 
 }
