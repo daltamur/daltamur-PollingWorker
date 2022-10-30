@@ -1,12 +1,19 @@
 package artistImageWebscraper
 
 import (
+	"fmt"
+	"net/url"
 	"strings"
 	"time"
 )
 import (
 	"github.com/gocolly/colly"
 )
+
+var proxies = []*url.URL{
+	{Host: "127.0.0.1:8080"},
+	{Host: "127.0.0.1:8081"},
+}
 
 func GetArtistImage(artistUrl *string) *[]string {
 
@@ -50,6 +57,8 @@ func GetArtistImage(artistUrl *string) *[]string {
 	for err != nil {
 		//for some reason in docker it will fail sometimes (this never happens when I run just the compiled binaries like normal).
 		//just keep trying until we don't fail anymore
+		fmt.Println("Failed to visit ", *artistUrl, " trying again...")
+		time.Sleep(1 * time.Minute)
 		err = c.Visit(strings.Split(*artistUrl, "/_")[0])
 	}
 
