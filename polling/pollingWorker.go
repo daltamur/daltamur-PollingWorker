@@ -15,6 +15,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
@@ -108,7 +109,8 @@ func handleRecentArtistsCall(jsonBody *[]byte) {
 				tracks.MostRecentTrackInfo.Tracks[index].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[index].Artist.Image, largeImage)
 			}
 		}()
-		time.Sleep(1 * time.Second)
+		randTime := rand.Intn(10-3) + 3
+		time.Sleep(time.Duration(randTime) * time.Second)
 	}
 	wg.Wait()
 
