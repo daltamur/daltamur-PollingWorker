@@ -48,7 +48,7 @@ func GetArtistImage(artistUrl *string) *[]string {
 			//large image
 			imageAddresses = append(imageAddresses, "https://lastfm.freetls.fastly.net/i/u/470x470/"+(*imageAddress)[positionOfID:]+".jpg")
 		}
-
+		//adf
 	})
 
 	//Our image URL comes in like last.fm/<Some Artist>/_/<Some Song>
