@@ -46,6 +46,7 @@ func instantiateLogglyClient(worker *PollingWorker) {
 
 //this is the meat and potatoes function of our polling worker
 func handleRecentArtistsCall(jsonBody *[]byte) {
+	DoLogglyMessage(NewPollingWorker(), "Started Polling. Standby...", "info")
 	//instantiate the reference to the DB
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
@@ -304,7 +305,7 @@ func GetRecentArtists(worker *PollingWorker) {
 		response, err := http.Get("https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&limit=200&&user=witless_wisdom&api_key=" + token + "&format=json&page=" + strconv.Itoa(page))
 		if err != nil {
 			var errorMessage = err.Error()
-			doLogglyMessage(worker, "GET Request error: "+errorMessage+"\n"+"No data gathered", "error")
+			DoLogglyMessage(worker, "GET Request error: "+errorMessage+"\n"+"No data gathered", "error")
 		} else {
 			//close the response reader when the rest of the function finishes
 			defer func(Body io.ReadCloser) {
@@ -327,17 +328,15 @@ func GetRecentArtists(worker *PollingWorker) {
 			handleRecentArtistsCall(&jsonDataFromHTTP)
 			var totalTime = time.Since(start)
 			var totalTimeString = totalTime.String()
-			totalTimeString = strings.Replace(totalTimeString, "s", " seconds", 1)
-			totalTimeString = strings.Replace(totalTimeString, "m", " milliseconds", 1)
 
 			//send loggly the size of the response and how long it took to get it and then how long it took to process it
-			doLogglyMessage(worker, "GET Request accepted\nSize of response is "+fmt.Sprintf("%f", responseSize)+" kilobytes.\nResponse took "+requestTimeString+" to receive and "+totalTimeString+" to process", "info")
+			DoLogglyMessage(worker, "GET Request accepted\nSize of response is "+fmt.Sprintf("%f", responseSize)+" kilobytes.\nResponse took "+requestTimeString+" to receive and "+totalTimeString+" to process", "info")
 			fmt.Println("Cur page: ", page)
 		}
 	}
 }
 
-func doLogglyMessage(worker *PollingWorker, message string, level string) {
+func DoLogglyMessage(worker *PollingWorker, message string, level string) {
 	err := worker.logglyClient.EchoSend(level, message)
 	if err != nil {
 		fmt.Println(err)

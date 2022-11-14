@@ -1,7 +1,7 @@
 package artistImageWebscraper
 
 import (
-	"fmt"
+	"PollingWorker/polling"
 	"net/url"
 	"strings"
 	"time"
@@ -63,7 +63,8 @@ func GetArtistImage(artistUrl *string) *[]string {
 	for err != nil {
 		//for some reason in docker it will fail sometimes (this never happens when I run just the compiled binaries like normal).
 		//just keep trying until we don't fail anymore
-		fmt.Println("Failed to visit ", *artistUrl, " trying again...")
+		stringVal := "Failed to visit " + *artistUrl + " trying again..."
+		polling.DoLogglyMessage(polling.NewPollingWorker(), stringVal, "info")
 		time.Sleep(1 * time.Minute)
 		err = c.Visit(strings.Split(*artistUrl, "/_")[0])
 	}
