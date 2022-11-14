@@ -50,6 +50,13 @@ func GetArtistImage(artistUrl *string) *[]string {
 		}
 	})
 
+	c.OnRequest(func(r *colly.Request) {
+		r.Headers.Set("referer", "htt[s://www.google.com")
+		r.Headers.Set("pragma", "no-cache")
+		r.Headers.Set("dnt", "1")
+		r.Headers.Set("upgradable-iunscure-requests", "1")
+	})
+
 	//Our image URL comes in like last.fm/<Some Artist>/_/<Some Song>
 	//We only need last.fm/<some_artist> to get our address we will webscrape.
 	err := c.Visit(strings.Split(*artistUrl, "/_")[0])

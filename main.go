@@ -16,7 +16,7 @@ func main() {
 
 	//set the ticker to run in the background and tick every ten seconds
 	go func() {
-		randTime := rand.Intn(60-33) + 33
+		randTime := rand.Intn(240-180) + 180
 		ticker := time.NewTicker(time.Duration(randTime) * time.Minute)
 		for _ = range ticker.C {
 			//run the method that will run a get request from the API

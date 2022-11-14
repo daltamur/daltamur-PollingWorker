@@ -84,35 +84,36 @@ func handleRecentArtistsCall(jsonBody *[]byte) {
 				break
 			}
 		}
+		//TOOK OUT PARALLELISM, GOT CAUGHT WEBSCRAPING AGAIN, WHYYYYYY
 
 		//run the body of this function in parallel
-		go func() {
-			//tell the wait group the function is done when the rest of the body finishes
-			defer wg.Done()
-			//get the artist images using the track data & webscraping
-			var artistImages = *artistImageWebscraper.GetArtistImage(&strings.Split(curElement.Url, "/_")[0])
-			//if the webscraper found artist images, assign them to the artist struct found in the current track struct
-			if len(artistImages) != 0 {
-				var smallImage = dataStructs.Image{Size: "small", Text: artistImages[0]}
-				var mediumImage = dataStructs.Image{Size: "medium", Text: artistImages[1]}
-				var largeImage = dataStructs.Image{Size: "large", Text: artistImages[2]}
-				tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image, smallImage)
-				tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image, mediumImage)
-				tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image, largeImage)
-				//if the webscraper found no images, fill up the artist's images with placeholder image URLs
-			} else {
-				var smallImage = dataStructs.Image{Size: "small", Text: "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"}
-				var mediumImage = dataStructs.Image{Size: "medium", Text: "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png"}
-				var largeImage = dataStructs.Image{Size: "large", Text: "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png"}
-				tracks.MostRecentTrackInfo.Tracks[index].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[index].Artist.Image, smallImage)
-				tracks.MostRecentTrackInfo.Tracks[index].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[index].Artist.Image, mediumImage)
-				tracks.MostRecentTrackInfo.Tracks[index].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[index].Artist.Image, largeImage)
-			}
-		}()
-		randTime := rand.Intn(10-3) + 3
+		//go func() {
+		//tell the wait group the function is done when the rest of the body finishes
+		//	defer wg.Done()
+		//get the artist images using the track data & webscraping
+		var artistImages = *artistImageWebscraper.GetArtistImage(&strings.Split(curElement.Url, "/_")[0])
+		//if the webscraper found artist images, assign them to the artist struct found in the current track struct
+		if len(artistImages) != 0 {
+			var smallImage = dataStructs.Image{Size: "small", Text: artistImages[0]}
+			var mediumImage = dataStructs.Image{Size: "medium", Text: artistImages[1]}
+			var largeImage = dataStructs.Image{Size: "large", Text: artistImages[2]}
+			tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image, smallImage)
+			tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image, mediumImage)
+			tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[curIndex].Artist.Image, largeImage)
+			//if the webscraper found no images, fill up the artist's images with placeholder image URLs
+		} else {
+			var smallImage = dataStructs.Image{Size: "small", Text: "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"}
+			var mediumImage = dataStructs.Image{Size: "medium", Text: "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png"}
+			var largeImage = dataStructs.Image{Size: "large", Text: "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png"}
+			tracks.MostRecentTrackInfo.Tracks[index].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[index].Artist.Image, smallImage)
+			tracks.MostRecentTrackInfo.Tracks[index].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[index].Artist.Image, mediumImage)
+			tracks.MostRecentTrackInfo.Tracks[index].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[index].Artist.Image, largeImage)
+		}
+		//}()
+		randTime := rand.Intn(60-10) + 10
 		time.Sleep(time.Duration(randTime) * time.Second)
 	}
-	wg.Wait()
+	//wg.Wait()
 
 	//just print out each track's information in a readable way, stop when you reach the last known file
 	var foundMostRecentValue = false
