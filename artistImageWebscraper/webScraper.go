@@ -65,7 +65,7 @@ func GetArtistImage(artistUrl *string) *[]string {
 		//just keep trying until we don't fail anymore
 		stringVal := "Failed to visit " + *artistUrl + " trying again..."
 		logglyClient := loggly.New("Lastfm-Poll-Worker")
-		err := logglyClient.Send("info", stringVal)
+		err := logglyClient.Send("error", stringVal)
 		if err != nil {
 			return nil
 		}
