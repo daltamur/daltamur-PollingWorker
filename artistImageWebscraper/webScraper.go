@@ -1,7 +1,7 @@
 package artistImageWebscraper
 
 import (
-	"PollingWorker/polling"
+	"github.com/jamespearly/loggly"
 	"net/url"
 	"strings"
 	"time"
@@ -64,7 +64,11 @@ func GetArtistImage(artistUrl *string) *[]string {
 		//for some reason in docker it will fail sometimes (this never happens when I run just the compiled binaries like normal).
 		//just keep trying until we don't fail anymore
 		stringVal := "Failed to visit " + *artistUrl + " trying again..."
-		polling.DoLogglyMessage(polling.NewPollingWorker(), stringVal, "info")
+		logglyClient := loggly.New("Lastfm-Poll-Worker")
+		err := logglyClient.Send("info", stringVal)
+		if err != nil {
+			return nil
+		}
 		time.Sleep(1 * time.Minute)
 		err = c.Visit(strings.Split(*artistUrl, "/_")[0])
 	}
