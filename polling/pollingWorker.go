@@ -111,7 +111,7 @@ func handleRecentArtistsCall(jsonBody *[]byte) {
 			tracks.MostRecentTrackInfo.Tracks[index].Artist.Image = append(tracks.MostRecentTrackInfo.Tracks[index].Artist.Image, largeImage)
 		}
 		//}()
-		randTime := rand.Intn(60-10) + 10
+		randTime := rand.Intn(60-15) + 15
 		time.Sleep(time.Duration(randTime) * time.Second)
 	}
 	//wg.Wait()
