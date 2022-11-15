@@ -75,7 +75,7 @@ func handleRecentArtistsCall(jsonBody *[]byte) {
 		//resources on songs we are not adding to the database
 		_, err := os.Stat("mostRecentSong.json")
 		var mostRecentSong dataStructs.Track
-		if os.IsExist(err) {
+		if err == nil {
 			plan, _ := ioutil.ReadFile("mostRecentSong.json")
 			err := json.Unmarshal(plan, &mostRecentSong)
 			if err != nil {
