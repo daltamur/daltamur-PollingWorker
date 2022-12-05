@@ -72,7 +72,7 @@ func handleRecentArtistsCall(jsonBody *[]byte) {
 		index := index
 
 		//check if the current track is equal to the mostRecentSongJson. If it is, break out of the loop, no need to waste
-		//resources on songs we are not adding to the database
+		//resources on songs we are not adding to the database a
 		_, err := os.Stat("mostRecentSong.json")
 		var mostRecentSong dataStructs.Track
 		if err == nil {
